@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 13.09.2025 10:52:22
+// Create Date: 13.09.2025 10:46:40
 // Design Name: 
-// Module Name: syncw2r
+// Module Name: fifo_memory
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,28 +20,35 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
+
 //====================================================
-// Synchronize Write Pointer into Read Clock Domain
+// FIFO Memory (Verilog-2001 for Vivado)
 //====================================================
-module sync_w2r
+module fifomem
 #(
-  parameter ADDRSIZE = 4
+  parameter DATASIZE = 8, // Memory data word width
+  parameter ADDRSIZE = 4  // Number of mem address bits
 )
 (
-  input   rclk, rrst_n,
-  input   [ADDRSIZE:0] wptr,
-  output  reg [ADDRSIZE:0] rq2_wptr
+  input   winc, wfull, wclk,
+  input   [ADDRSIZE-1:0] waddr, raddr,
+  input   [DATASIZE-1:0] wdata,
+  output  [DATASIZE-1:0] rdata
 );
 
-  reg [ADDRSIZE:0] rq1_wptr;
+  // Depth = 2^ADDRSIZE
+  localparam DEPTH = 1 << ADDRSIZE;
 
-  // Two-stage synchronizer for clock domain crossing
-  always @(posedge rclk or negedge rrst_n) begin
-    if (!rrst_n)
-      {rq2_wptr, rq1_wptr} <= 0;
-    else
-      {rq2_wptr, rq1_wptr} <= {rq1_wptr, wptr};
+  // Memory declaration
+  reg [DATASIZE-1:0] mem [0:DEPTH-1];
+
+  // Asynchronous read (combinational)
+  assign rdata = mem[raddr];
+
+  // Synchronous write
+  always @(posedge wclk) begin
+    if (winc && !wfull)
+      mem[waddr] <= wdata;
   end
 
 endmodule
-
