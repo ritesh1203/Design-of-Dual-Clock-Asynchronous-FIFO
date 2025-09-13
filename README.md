@@ -20,12 +20,18 @@ outputs
 
 simulation
 
-#Introduction
+# Introduction
 
 FIFO-Every memory in which the data word that is written in first also comes out first when the memory is read is a first-in first-out memory.
 
 An asynchronous FIFO refers to a FIFO design where data values are written sequentially into a FIFO buffer using one clock domain, and the data values are sequentially read from the same FIFO buffer using another clock domain, where the two clock domains are asynchronous to each other.
 
 One common technique for designing an asynchronous FIFO is to use Gray code pointers that are synchronized into the opposite clock domain before generating synchronous FIFO full or empty status signals.
+
+
+# FIFO Structure
+
+<img width="832" height="423" alt="114535379-9c257180-9c6d-11eb-972d-fcfaf2aca1eb" src="https://github.com/user-attachments/assets/b97a0cd8-53ae-4fb5-b437-8aeec5af7138" />
+
 
  
